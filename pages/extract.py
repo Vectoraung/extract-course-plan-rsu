@@ -26,6 +26,17 @@ if st.session_state['excel'] is None:
                 # Attempt to generate the Excel file
                 excel_file, file_name = cp.generate_excel_file(streamlit=True)   # returns BytesIO
                 st.session_state['excel'] = (excel_file, file_name, cp)
+                st.session_state['excel'] = {
+                    "file": excel_file,
+                    "file_name": file_name,
+                    "student_name": cp.student_name,
+                    "student_id": cp.student_id,
+                    "rsu_i": cp.rsu_i.get_all_courses(),
+                    "ic": cp.ic.get_all_courses(),
+                    "ge": cp.ge.get_all_courses(),
+                    "major": cp.major.get_all_courses(),
+                    "major_electives": cp.major_elective.get_all_courses(get_only_finished_courses=True),
+                }
                 st.rerun()  # refresh the app to show download button
             except Exception as e:
                 # Show an error message in the app
@@ -37,8 +48,8 @@ if st.session_state['excel'] is None:
             time.sleep(2)
             empty_container.empty()
 else:
-    file, file_name, cp = st.session_state['excel']
-    file_name = f"{cp.student_name}_{cp.student_id}_courses_plan.xlsx"
+    file = st.session_state['excel']['file']
+    file_name = f"{st.session_state['excel']['file_name']}.xlsx"
 
     st.success(f"Course plan extracted successfully! ``{file_name}`` is ready to download.")
 
