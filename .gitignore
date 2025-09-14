@@ -6,4 +6,7 @@ __pycache__/
 venv/
 *.xlsx
 *.csv
+*.pdf
 .DS_Store
+
+test.py

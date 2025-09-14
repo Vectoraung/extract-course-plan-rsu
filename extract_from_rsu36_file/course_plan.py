@@ -3,6 +3,10 @@ from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import PatternFill, Font, Alignment
 import openpyxl
 import io
+import re
+
+from extract_from_rsu36_file.course import Course
+from extract_from_rsu36_file.course_group import CourseGroup
 
 excel_configs = {
     1: {"width": 5},
@@ -14,187 +18,6 @@ excel_configs = {
     7: {"width": 10},
     8: {"width": 10},
 }
-
-class Course:
-    def __init__(self, raw_line):
-        self.code = None
-        self.credit = None
-        self.grade = None
-        self.term = None
-        self.year_eng = None
-        self.year_thai = None
-
-        if raw_line:
-            self._format_from_raw_line(raw_line)
-
-    def _format_from_raw_line(self, line):
-        line = line.split(" ")
-        self.code = line[1]
-        self.credit = int(line[2])
-
-        if len(line) < 4:
-            return
-
-        self.grade = line[3]
-
-        sem_and_year = line[4].split("/")
-
-        semester_num, year_thai = int(sem_and_year[0]), int(sem_and_year[1])
-
-        if semester_num == 1:
-            self.term = "FIRST SEMESTER"
-        elif semester_num == 2:
-            self.term = "SECOND SEMESTER"
-        elif semester_num == 3:
-            self.term = "SUMMER SESSION"
-        else: self.term = "unknown"
-
-        self.year_eng = self._thai_year_to_english(thai_year=year_thai)
-        self.year_thai = year_thai
-    
-    def _thai_year_to_english(self, thai_year, month = 1):
-        """
-        Convert Thai Buddhist Era year to Gregorian year.
-        
-        Args:
-            thai_year (int): Thai year (e.g., 2568)
-            month (int): Month number (default=1)
-            
-        Returns:
-            int: English year
-        """
-        if month <= 3:
-            return thai_year - 544
-        else:
-            return thai_year - 543
-
-    def __repr__(self):
-        return f"{self.code} ({self.credit} cr) - {self.grade} [{self.term}]"
-
-
-class CourseGroup:
-    def __init__(self, name, total_credits):
-        self.name = name
-        self.total_credits = total_credits
-        self.courses = []
-
-    def add_course(self, course):
-        self.courses.append(course)
-
-    def get_total_credits(self):
-        """Sum of credits from all courses in this group"""
-        total = 0
-        for c in self.courses:
-            if c.grade is not None:
-                total += c.credit
-        return total
-
-    def get_courses_by_term(self, term):
-        """Return courses taken in a specific term"""
-        return [c for c in self.courses if c.term == term]
-    
-    def show_courses(self, show_only_finished_courses=False):
-        print(f"\n📚 {self.name} (Max Credits: {self.total_credits})")
-        print("-" * 60)
-        if not self.courses:
-            print("No courses added yet.")
-            return
-
-        # Sort by code (e.g. ICT101 < ICT205 < IRS111)
-        sorted_courses = sorted(self.courses, key=lambda c: c.code)
-
-        # Filter if only finished courses are requested
-        if show_only_finished_courses:
-            sorted_courses = [c for c in sorted_courses if c.grade is not None]
-
-        if not sorted_courses:
-            print("No finished courses yet." if show_only_finished_courses else "No courses added yet.")
-            return
-
-        for i, c in enumerate(sorted_courses, 1):
-            print(f"{i}. {c.code:<8} | {c.credit} Credits | Grade: {c.grade}"
-                f" | Term: {c.term} | Year(EN): {c.year_eng} | Year(TH): {c.year_thai}")
-
-        print(f"--> Total Credits so far: {self.get_total_credits()}")
-
-    def convert_to_excel_format(self, show_only_finished_courses=False):
-        """
-        Convert courses to a 2D list (Excel-friendly format) with styling:
-        - Title row (group name + max credits)
-        - Header row
-        - Rows for each course
-        - Footer row with total credits
-        """
-        courses = self.courses
-
-        courses = self.courses
-
-        if show_only_finished_courses:
-            courses = [c for c in courses if c.grade is not None]
-
-        data = []
-
-        current_total_credits = self.get_total_credits()
-
-        # Title row
-        title_text = f"{self.name} (Max Credits: {self.total_credits})"
-        note_text = ""
-        if current_total_credits == self.total_credits:
-            note_text += " (FINISHED!)"
-        else:
-            note_text += f" (LEFT CREDITS: {self.total_credits - current_total_credits})"
-        title = [title_text, "", "", "", "", "", note_text, ""]
-        data.append(title)
-
-        # Empty row for spacing
-        data.append([])
-
-        # Header row
-        header = ["#", "Course Code", "Course Name", "Credits", "Grade", "Term", "Year (EN)", "Year (TH)"]
-        data.append(header)
-
-        # Ensure sorted order
-        sorted_courses = sorted(courses, key=lambda c: c.code)
-
-        # Course rows
-        for i, c in enumerate(sorted_courses, 1):
-            row = [
-                i,
-                c.code,
-                getattr(c, "name", ""),  # optional course name if available
-                c.credit,
-                "" if c.grade is None else c.grade,
-                "" if c.term is None else c.term,
-                "" if c.year_eng == 0 else c.year_eng,
-                "" if c.year_thai == 0 else c.year_thai
-            ]
-            data.append(row)
-
-        # Footer row: total credits
-        total_row = ["", "", "Total Credits", current_total_credits]
-        
-        data.append(total_row)
-        data.append([])
-
-        return data
-
-    def calculate_gpa(self):
-        """Weighted GPA for this group"""
-        grade_points = {
-            "A": 4.0, "B+": 3.5, "B": 3.0,
-            "C+": 2.5, "C": 2.0,
-            "D+": 1.5, "D": 1.0, "F": 0.0
-        }
-        total_points = 0
-        total_credits = 0
-        for c in self.courses:
-            if c.grade in grade_points:
-                total_points += grade_points[c.grade] * c.credit
-                total_credits += c.credit
-        return round(total_points / total_credits, 2) if total_credits > 0 else None
-
-    def __repr__(self):
-        return f"{self.name} ({self.get_total_credits()} / {self.total_credits} credits)"
     
 class CoursePlan:
     def __init__(self):
@@ -215,30 +38,49 @@ class CoursePlan:
         page = pdf.pages[0]
 
         all_text = self._split_half(page)
-
-        groups = self._extract_courses(all_text)
-
-        except_ge_group_names = [
-            "อลตลลกษณณมหาววทยาลลย 3 /3 หนนวยกกต",
-            "ความณเปนสากลและการสสสอสาร 12 /12 หนนวยกกต",
-            "2หมวดววชาเฉพาะ 66 / 84 หนนวยกกต 2.1 กณลมล ววชาพสพนฐานววชาชยพ 9 /9 หนนวยกกต",
-            "2.2 กณลมล ววชาชยพบลงคลบ 48 /60 หนนวยกกต",
-            "2.3 กณลมล ววชาชยพเลสอก 9 /15 หนนวยกกต",
+        prefixes_to_remove = [
+            "1หมวดววชาศศกษาทลสวไป",
+            "2หมวดววชาเฉพาะ",
         ]
 
-        for course in groups["อลตลลกษณณมหาววทยาลลย 3 /3 หนนวยกกต"]:
+        all_text = [
+            t for t in self._split_half(page)
+            if not any(t.startswith(prefix) for prefix in prefixes_to_remove)
+        ]
+
+        groups = self._extract_courses(all_text)
+        
+        self._extract_student_name(all_text)
+        self._extract_student_id(all_text)
+
+        except_ge_group_names = [
+            "อลตลลกษณณมหาววทยาลลย",
+            "ความณเปนสากลและการสสสอสาร",
+            "กณลมล ววชาพสพนฐานววชาชยพ",
+            "กณลมล ววชาชยพบลงคลบ",
+            "กณลมล ววชาชยพเลสอก",
+        ]
+        '''except_ge_group_names = [
+            "อลตลลกษณณมหาววทยาลลย 3 /3 หนนวยกกต",
+            "ความณเปนสากลและการสสสอสาร 12 /12 หนนวยกกต",
+            "2.1 กณลมล ววชาพสพนฐานววชาชยพ 9 /9 หนนวยกกต",
+            "2.2 กณลมล ววชาชยพบลงคลบ 48 /60 หนนวยกกต",
+            "2.3 กณลมล ววชาชยพเลสอก 9 /15 หนนวยกกต",
+        ]'''
+
+        for course in groups["อลตลลกษณณมหาววทยาลลย"]:
             self.rsu_i.add_course(course=Course(raw_line=course))
 
-        for course in groups["ความณเปนสากลและการสสสอสาร 12 /12 หนนวยกกต"]:
+        for course in groups["ความณเปนสากลและการสสสอสาร"]:
             self.ic.add_course(Course(raw_line=course))
 
-        for course in groups["2หมวดววชาเฉพาะ 66 / 84 หนนวยกกต 2.1 กณลมล ววชาพสพนฐานววชาชยพ 9 /9 หนนวยกกต"]:
+        for course in groups["กณลมล ววชาพสพนฐานววชาชยพ"]:
             self.core.add_course(Course(raw_line=course))
 
-        for course in groups["2.2 กณลมล ววชาชยพบลงคลบ 48 /60 หนนวยกกต"]:
+        for course in groups["กณลมล ววชาชยพบลงคลบ"]:
             self.major.add_course(Course(raw_line=course))
 
-        for course in groups["2.3 กณลมล ววชาชยพเลสอก 9 /15 หนนวยกกต"]:
+        for course in groups["กณลมล ววชาชยพเลสอก"]:
             self.major_elective.add_course(Course(raw_line=course))
 
         for g in groups:
@@ -246,7 +88,7 @@ class CoursePlan:
                 for course in groups[g]:
                     self.ge.add_course(Course(raw_line=course))
 
-    def generate_excel_file(self):
+    def generate_excel_file(self, streamlit=False):
         wb = openpyxl.Workbook()
         ws = wb.active
 
@@ -288,12 +130,39 @@ class CoursePlan:
 
             start_row = end_row + 1
 
-        excel_buffer = io.BytesIO()
-        wb.save(excel_buffer)
-        excel_buffer.seek(0)  # rewind to the start
-        
-        return excel_buffer
-        #wb.save("courses.xlsx")
+        file_name = f"{self.student_name}_{self.student_id}_courses_plan"
+
+        if streamlit:
+            excel_buffer = io.BytesIO()
+            wb.save(excel_buffer)
+            excel_buffer.seek(0)  # rewind to the start
+
+            return excel_buffer, file_name
+        wb.save(f"{file_name}.xlsx")
+
+    def _extract_student_name(self, lines):
+        name_line = lines[2]
+        match = re.search(r"(MISS|MR\.)", name_line)
+        if match:
+            start_index = match.end()
+            # Extract the name from the start index to the end of the string
+            name = name_line[start_index:].strip().replace(" ", "_")
+            self.student_name = name
+
+    def _extract_student_id(self, lines):
+        for line in lines:
+            if line.startswith("รหหสประจจาตหว"):
+                self.student_id = line.split(" ")[1]
+
+    def _clean_group_name(self, text):
+        string_to_remove = ["หนนวยกกต", ".", "/"]
+
+        for s in string_to_remove:
+            text = text.replace(s, "")
+
+        text = re.sub(r'\d+', ' ', text).strip()
+
+        return text
 
     def _extract_courses(self, lines):
         groups = {
@@ -303,11 +172,11 @@ class CoursePlan:
             if str(line).strip() == "รหหสวกชา หนนวยกกต เกรด ยชนยหน":
                 temp = ""
                 back_step = 1
-                while str(lines[i-back_step]).strip() != "1หมวดววชาศศกษาทลสวไป 30 / 30 หนนวยกกต" and not self._is_course_format(lines[i-back_step]):
+                while not str(lines[i-back_step]).strip().startswith("ชชชอ") and not self._is_course_format(lines[i-back_step]):
                     temp = lines[i-back_step] + " " + temp
                     back_step += 1
 
-                current_group = temp.strip()
+                current_group = self._clean_group_name(temp)
 
                 groups[current_group] = []
 
