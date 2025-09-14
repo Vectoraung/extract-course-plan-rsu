@@ -14,6 +14,12 @@ class CourseGroup:
             if c.grade is not None:
                 total += c.credit
         return total
+    
+    def get_all_courses(self, get_only_finished_courses=False):
+        """Return all courses in this group"""
+        if get_only_finished_courses:
+            return [c for c in self.courses if c.grade is not None]
+        return self.courses
 
     def get_courses_by_term(self, term):
         """Return courses taken in a specific term"""

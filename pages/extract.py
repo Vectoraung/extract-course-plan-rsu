@@ -4,6 +4,10 @@ import time
 
 st.title("Course Plan Extractor")
 
+st.info("""
+**Disclaimer:** This app may produce errors or incorrect results. Please double-check all outputs and use at your own risk.
+""")
+
 if 'excel' not in st.session_state:
     st.session_state['excel'] = None
 
@@ -17,21 +21,29 @@ if st.session_state['excel'] is None:
             
             cp = CoursePlan()
             cp.import_with_RSU36_file(uploaded_file)
-            excel_file, file_name = cp.generate_excel_file(streamlit=True)   # returns BytesIO
-            st.session_state['excel'] = (excel_file, file_name)
+            
+            try:
+                # Attempt to generate the Excel file
+                excel_file, file_name = cp.generate_excel_file(streamlit=True)   # returns BytesIO
+                st.session_state['excel'] = (excel_file, file_name, cp)
+                st.rerun()  # refresh the app to show download button
+            except Exception as e:
+                # Show an error message in the app
+                st.error(f"Error generating Excel file: {e}")
 
-            st.rerun()
         else:
             empty_container = st.empty()
             empty_container.warning("Please upload a file first.")
             time.sleep(2)
             empty_container.empty()
 else:
-    st.success(f"Course plan extracted successfully! Ready to download.")
+    file, file_name, cp = st.session_state['excel']
+    file_name = f"{cp.student_name}_{cp.student_id}_courses_plan.xlsx"
 
-    file, file_name = st.session_state['excel']
+    st.success(f"Course plan extracted successfully! ``{file_name}`` is ready to download.")
+
     st.download_button(
-        label="📥 Download Excel",
+        label="Download Excel",
         data=file,
         file_name=f"{file_name}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -39,5 +51,4 @@ else:
 
     if st.button("Extract Another"):
         st.session_state['excel'] = None
-
         st.rerun()
