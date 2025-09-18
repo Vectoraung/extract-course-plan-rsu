@@ -1,0 +1,50 @@
+{
+    "RSU Identity": {
+        "start_row": 6,
+        "end_row": 7,
+        "prefix": ["IRS", "RSU"],
+        "second_digit": "1"
+    },
+    "Internationalization and Communication": {
+        "start_row": 12,
+        "end_row": 15,
+        "prefix": ["ILE","ENL","ITA","THA","IRS","RSU"], 
+        "second_digit": "2"
+    },
+    "Leadership and Social Responsibility": {
+        "start_row": 20,
+        "end_row": 20,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "3"
+    },
+    "Arts and Culture": {
+        "start_row": 21,
+        "end_row": 21,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "4"
+    },
+    "Innovative Entrepreneurship": {
+        "start_row": 22,
+        "end_row": 22,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "5"
+    },
+    "Digital Media Literacy": {
+        "start_row": 23,
+        "end_row": 23,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "6"
+    },
+    "Essence of Science": {
+        "start_row": 24,
+        "end_row": 24,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "7"
+    },
+    "RSU My-Style": {
+        "start_row": 25,
+        "end_row": 25,
+        "prefix": ["IRS","RSU"],
+        "second_digit": "8"
+    }
+}

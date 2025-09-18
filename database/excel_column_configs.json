@@ -1,0 +1,22 @@
+{
+    "number": {
+        "col": 1,
+        "name": "#"
+    },
+    "code": {
+        "col": 2,
+        "name": "Code"
+    },
+    "credit": {
+        "col": 3,
+        "name": "Credit"
+    },
+    "grade": {
+        "col": 4,
+        "name": "Grade"
+    },
+    "term": {
+        "col": 5,
+        "name": "Term"
+    }
+}

@@ -23,7 +23,7 @@ This Excel file helps track which courses have already been completed, so we don
 This app makes the process **automatic**:  
 1. Log in to the RSU intranet and download your `rsu36_form.pdf`.  
 2. Upload it here.  
-3. Instantly get a **well-structured Excel file** with your completed courses, organized by group.  
+3. Instantly get a **well-structured Excel file** with your completed courses, organized by group.
 
 No more tedious manual work,
 No more worrying about wasted credits

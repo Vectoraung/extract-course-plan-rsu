@@ -1,0 +1,16 @@
+{
+    "faculties": [
+        {
+            "id": 0,
+            "name": "Common",
+            "thai_name": "",
+            "code": ""
+        },
+        {
+            "id": 1,
+            "name": "Information and Communication Technology",
+            "thai_name": "เทคโนโลยยสารสนเทศและการสสสอสาร",
+            "code": "ICT"
+        }
+    ]
+}
