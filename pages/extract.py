@@ -8,6 +8,9 @@ st.title("Course Plan Extractor")
 st.info("""
 **Disclaimer:** This app may produce errors or incorrect results. Please double-check all outputs and use at your own risk.
 """)
+st.info("""
+Currently working only for ICT (Information and Communication Technology) major.
+""")
 
 def reset_session_state():
     st.session_state['course_plan_data'] = {

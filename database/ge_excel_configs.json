@@ -3,48 +3,56 @@
         "start_row": 6,
         "end_row": 7,
         "prefix": ["IRS", "RSU"],
-        "second_digit": "1"
+        "second_digit": "1",
+        "max_credit": 3
     },
     "Internationalization and Communication": {
         "start_row": 12,
         "end_row": 15,
         "prefix": ["ILE","ENL","ITA","THA","IRS","RSU"], 
-        "second_digit": "2"
+        "second_digit": "2",
+        "max_credit": 12
     },
     "Leadership and Social Responsibility": {
         "start_row": 20,
         "end_row": 20,
         "prefix": ["IRS","RSU"],
-        "second_digit": "3"
+        "second_digit": "3",
+        "max_credit": 3
     },
     "Arts and Culture": {
         "start_row": 21,
         "end_row": 21,
         "prefix": ["IRS","RSU"],
-        "second_digit": "4"
+        "second_digit": "4",
+        "max_credit": 3
     },
     "Innovative Entrepreneurship": {
         "start_row": 22,
         "end_row": 22,
         "prefix": ["IRS","RSU"],
-        "second_digit": "5"
+        "second_digit": "5",
+        "max_credit": 3
     },
     "Digital Media Literacy": {
         "start_row": 23,
         "end_row": 23,
         "prefix": ["IRS","RSU"],
-        "second_digit": "6"
+        "second_digit": "6",
+        "max_credit": 3
     },
     "Essence of Science": {
         "start_row": 24,
         "end_row": 24,
         "prefix": ["IRS","RSU"],
-        "second_digit": "7"
+        "second_digit": "7",
+        "max_credit": 3
     },
     "RSU My-Style": {
         "start_row": 25,
         "end_row": 25,
         "prefix": ["IRS","RSU"],
-        "second_digit": "8"
+        "second_digit": "8",
+        "max_credit": 3
     }
 }

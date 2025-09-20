@@ -1,22 +1,28 @@
 {
     "Information and Communication Technology": {
         "Core Courses": {
-        "start_row": 32,
-        "end_row": 34,
-        "show_all": true,
-        "courses": ["ICT111", "ICT112", "MAT153"]
+            "start_row": 32,
+            "end_row": 34,
+            "show_all": true,
+            "courses": ["ICT111", "ICT112", "MAT153"],
+            "max_credit": 9,
+            "in_order": false
         },
         "Major Courses": {
             "start_row": 39,
             "end_row": 60,
             "show_all": true,
-            "courses": ["ICT101","ICT102","ICT103","ICT110","ICT202","ICT209","ICT210","ICT211","ICT212","ICT213","ICT215","ICT301","ICT302","ICT304","ICT305","ICT401","ICT402","ICT493","ICT494","ICT495","ICT498","ITE201"]
+            "courses": ["ITE201", "ICT101","ICT102","ICT103","ICT110","ICT202","ICT209","ICT210","ICT211","ICT212","ICT213","ICT215","ICT301","ICT302","ICT304","ICT305","ICT401","ICT402","ICT493","ICT494","ICT495","ICT498"],
+            "max_credit": 66,
+            "in_order": true
         },
         "Major Elective Courses": {
             "start_row": 65,
             "end_row": 69,
             "show_all": false,
-            "courses": ["IBM221","IBM322","ICT214","ICT320","ICT324","ICT325","ICT328","ICT329","ICT331","ICT333","ICT334","ICT336","ICT338","ICT339","ICT352","ICT355","ICT356","ICT358","ICT421","ICT422","ICT425","ICT426","ICT428","ICT429","ICT489","IEG350"]
+            "courses": ["IBM221","IBM322","ICT214","ICT320","ICT324","ICT325","ICT328","ICT329","ICT331","ICT333","ICT334","ICT336","ICT338","ICT339","ICT352","ICT355","ICT356","ICT358","ICT421","ICT422","ICT425","ICT426","ICT428","ICT429","ICT489","IEG350"],
+            "max_credit": 15,
+            "in_order": false
         }
     }
     
