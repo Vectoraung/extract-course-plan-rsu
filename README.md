@@ -7,7 +7,7 @@ An easy and straight forward web tool to create a course plan table for internat
 - Go to 'Extract' tab.
 - Upload your downloaded RSU36 file then click 'Extract' button.
 - You can either download the excel file with course plan tables or go to 'Extracted Tables' tab to view the tables.
-- Only avaiable for ICT (Information and Communication Technology) major
+- Only avaiable for ICT (Information and Communication Technology) major for now.
 
 ## Run Locally
 1. Clone the repository
