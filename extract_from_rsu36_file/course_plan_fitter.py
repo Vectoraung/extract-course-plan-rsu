@@ -21,21 +21,6 @@ class CoursePlanFitter:
         for line in data['courses']:
             self.courses.append(self._format_course(line, term_full_word=True))
 
-        ##################################################################################
-        dummy_courses = ["ICT212", "ICT210", "ICT422", "ICT336"]
-
-        for course in self.courses:
-            for c in dummy_courses:
-                if course['code'] == c:
-                    index = self.courses.index(course)
-                    self.courses[index]['grade'] = "A"
-                    self.courses[index]['credit'] = 3
-                    self.courses[index]['term_number'] = 1
-                    self.courses[index]['year_eng'] = 2025
-                    self.courses[index]['year_thai'] = 2568
-                    self.courses[index]['term'] = "first / 2025"
-        ###################################################################################
-
         self.courses.sort(
             key=lambda c: (
                 c["year_eng"] is None,   # False (0) first, True (1) last

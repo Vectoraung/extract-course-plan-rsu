@@ -1,9 +1,9 @@
 # Course Plan Creator ( Only for Rangit University, Thailand )
-An easy web tool to convert into a course plan table from RSU36 form file from intranet RSU.
+An easy and straight forward web tool to create a course plan table for international students from Rangsit University.
 
 ## Usage Guide
-- Download the RSU36 form file from [RSU's intranet](https://intranet.rsu.ac.th/suWeb/SignIn.aspx).
-- Go to this extractor website [Course Plan Extractor →](https://extract-course-plan-rsu.streamlit.app/)
+- Download the RSU36 form file from [RSU's intranet ➡](https://intranet.rsu.ac.th/suWeb/SignIn.aspx)
+- Go to this extractor website [Course Plan Extractor ➡](https://extract-course-plan-rsu.streamlit.app/)
 - Go to 'Extract' tab.
 - Upload your downloaded RSU36 file then click 'Extract' button.
 - You can either download the excel file with course plan tables or go to 'Extracted Tables' tab to view the tables.
